@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.login_name }}, Here Are Your Tastings!{% endblock %}
+
+{% block body %}
+<h1>Reservations for {{ user.login_name }}</h1>
+
+{% if my_tastings %}
+    <p>We'll see you soon for some exciting melon tasting!</p>
+    <ul>
+        {% for each_date in my_tastings %}
+        <li>{{ each_date }} <button class="myButton" type="submit" id="cancel">Cancel</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>Oh no! You have no reservations! Sign up for some tastings! </p>
+{% endif %}
+
+{% endblock %}

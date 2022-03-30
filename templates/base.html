@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+
+    {% block head %}{% endblock %}
+
+    <link rel="stylesheet" href="/static/css/site.css"/>
+    {% if user_logged_in %}
+    <a href="/specify_time_window">New Reservation</a> | <a href="/my_reservations">My Reservations</a> | <a
+        href="/logout">Logout</a>
+    {% endif %}
+</head>
+<body>
+{% for msg in get_flashed_messages() %}
+<p class="flash-msg">
+    {{ msg }}
+</p>
+{% endfor %}
+
+{% block body %}{% endblock %}
+
+{% block after_body %}{% endblock %}
+</body>
+</html>

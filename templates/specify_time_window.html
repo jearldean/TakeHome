@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Find your MelonTasting™!{% endblock %}
+
+{% block body %}
+
+<h1>Let's meet! When are you free?</h1>
+
+<form action="/select_appointment" method="post">
+
+    <label for="start">Start date:</label>
+    <input type="date" id="start" name="pick-date"
+           value='{{ min_date }}'
+           min='{{ min_date }}' max='{{ max_date }}'>
+
+    <br><br>
+    <label for="start">Begin Search Time:</label>
+
+    <input type="time" id="start_time" name="pick-time1" value="00:00">
+    <!--       min="09:00" max="18:00" required>-->
+
+    <br>
+    <label>End Search Time:</label>
+
+    <input type="time" id="end_time" name="pick-time2" value="23:59">
+    <br>
+
+    <input type="submit">
+    <br><br>
+    <small>We are open for half-hour appointments 24/7/365 for your convenience.</small>
+
+</form>
+
+{% endblock body %}

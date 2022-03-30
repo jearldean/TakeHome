@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Select your reservation!{% endblock %}
+
+{% block body %}
+
+{% if avaliable_times %}
+
+<h1>Let's meet! When are you free?</h1>
+
+<form action="/record_appointment" method="post">
+    {% for appointment_id in avaliable_times %}
+
+    <button class="myButton" type="button" name="record-it" value="{{ appointment_id }}"
+            onclick="if (confirm('Reserve {{ avaliable_times[appointment_id] }} ?')) { this.form.submit(); } else { return false; }">
+        {{ avaliable_times[appointment_id] }}
+    </button>
+
+    {% endfor %}
+</form>
+
+{% else %}
+
+<p>Shucks, we found no appointments during that time.</p>
+<br>
+<a href="/specify_time_window">Let's Try Again!</a>
+{% endif %}
+
+
+{% endblock body %}
