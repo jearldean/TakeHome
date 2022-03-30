@@ -10,8 +10,7 @@
 <form action="/record_appointment" method="post">
     {% for appointment_id in avaliable_times %}
 
-    <button class="myButton" type="button" name="record-it" value="{{ appointment_id }}"
-            onclick="if (confirm('Reserve {{ avaliable_times[appointment_id] }} ?')) { this.form.submit(); } else { return false; }">
+    <button class="myButton" type="submit" name="book_this_appointment" value="{{ appointment_id }}">
         {{ avaliable_times[appointment_id] }}
     </button>
 

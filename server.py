@@ -48,7 +48,7 @@ def login_process():
 
 @app.route("/logout")
 def logout():
-    """Display homepage."""
+    """Log out user."""
 
     if "login_name" in session:
         del session["login_name"]
@@ -57,19 +57,18 @@ def logout():
 
 
 @app.route("/my_reservations")
-def my_res():
-    """Display homepage."""
+def my_reservations():
+    """Display user's reservations."""
 
     user = crud.get_user_by_login_name(login_name=session["login_name"])
-    my_tastings = crud.get_my_reservations(user=user)
-    print(my_tastings)
-    return render_template('my_reservations.html', user=user, my_tastings=my_tastings,
+    my_reservations = crud.get_my_reservations(user=user)
+    return render_template('my_reservations.html', user=user, my_reservations=my_reservations,
                            user_logged_in=is_user_logged_in())
 
 
 @app.route("/select_appointment", methods=["POST"])
 def select_appointment():
-    """Display homepage."""
+    """Selectors to search for appointments."""
 
     user = crud.get_user_by_login_name(login_name=session["login_name"])
     date = request.form["pick-date"]
@@ -86,7 +85,7 @@ def select_appointment():
 
 @app.route("/specify_time_window")
 def specify_time_window():
-    """Display homepage."""
+    """Input time search parameters."""
     min_date, max_date = crud.min_max_date_range()
     return render_template('specify_time_window.html',
                            min_date=min_date,
@@ -95,25 +94,28 @@ def specify_time_window():
 
 
 @app.route('/record_appointment', methods=['POST'])
-def record_app():
+def record_appointment():
+    """Book a reservation"""
     user = crud.get_user_by_login_name(login_name=session["login_name"])
-
-    desired_appointment_id = request.form["record-it"]
-    print('\n\n\n\n\n', desired_appointment_id)
-
+    desired_appointment_id = request.form['book_this_appointment']
     desired_appointment = crud.get_appointment_by_id(appointment_id=int(desired_appointment_id))
+    human_reservation_datetime = desired_appointment.appointment_date_time.strftime('%A, %B %-d, %Y at %-I:%M %p')
 
     if crud.can_user_book_this_reservation(user=user, desired_appointment=desired_appointment):
-        flash("You got it!")
+        flash(f"You got it! See you on {human_reservation_datetime}")
     else:
-        flash(f"Could not get {'friday the 13th'}")
-
+        flash(f"Sorry, We could not get you {human_reservation_datetime}")
     return redirect("/my_reservations")
 
 
-"""
-Problem Statement: https://docs.google.com/document/d/1g5WMLwezVuGCNnZBafREobcDDst8PgxElGPHfk7EgRI/edit#
-"""
+@app.route('/cancel_reservation', methods=['POST'])
+def cancel_reservation():
+    """Cancel a reservation."""
+
+    cancel_reservation_id = request.form['cancel']
+    crud.delete_reservation(reservation_id=int(cancel_reservation_id))
+    return redirect("/my_reservations")
+
 
 if __name__ == "__main__":
     connect_to_db(app)

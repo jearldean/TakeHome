@@ -28,6 +28,11 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+table {
+    width: 70%;
+    text-align: left;
+}
+
 .myButton {
     color: rgb(255, 255, 255);
     font-size: 22px;

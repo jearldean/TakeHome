@@ -95,7 +95,7 @@ def get_appointments():
 def get_appointment_by_id(appointment_id):
     """Return one appointment."""
 
-    return Appointment.query.get(appointment_id=appointment_id)
+    return Appointment.query.get(appointment_id)
 
 
 def search_for_available_appointments(user, desired_day, start_time=None, end_time=None):
@@ -166,7 +166,7 @@ def get_reservations():
 
 def delete_reservation(reservation_id):
     """Delete a row from reservations."""
-    reservation = Reservation.query.get(reservation_id=reservation_id)
+    reservation = Reservation.query.get(reservation_id)
     db.session.delete(reservation)
     db.session.commit()
 
@@ -179,7 +179,7 @@ def can_user_book_this_reservation(user, desired_appointment):
     """
     if not does_user_have_a_conflict_with_desired_appointment(
             user, desired_appointment) and not does_this_reservation_exist_already(desired_appointment):
-        create_reservation(user, desired_appointment)
+        return create_reservation(user, desired_appointment)
     else:
         # No reservation for you!
         return False
@@ -195,9 +195,10 @@ def does_user_have_a_conflict_with_desired_appointment(user, desired_appointment
 def does_user_already_have_a_reservation_this_day(user, desired_day):
     """desired_day must be in time_format = '%Y-%m-%d'"""
     time_format = '%Y-%m-%d'
-    my_reservations = show_my_reservations(user, strftime_format=time_format)
+    my_reservations = get_my_reservations(user, strftime_format=time_format)
+    my_reservation_dates = [qq[0] for qq in my_reservations]
 
-    if my_reservations and desired_day in my_reservations:
+    if my_reservation_dates and desired_day in my_reservation_dates:
         return True
     else:
         return False
@@ -212,24 +213,14 @@ def does_this_reservation_exist_already(desired_appointment):
         return False
 
 
-def show_my_reservations(user, strftime_format='%A, %B %-d, %Y at %-I:%M %p'):
+def get_my_reservations(user, strftime_format='%A, %B %-d, %Y at %-I:%M %p'):
     """Show all reservations for a user in human-readable format."""
-    list_datetime_objects = get_my_reservations(user)
-    formatted_list = [each_datetime_object.strftime(strftime_format) for each_datetime_object in list_datetime_objects]
-
-    if formatted_list:
-        return formatted_list
-    else:
-        return False
-
-
-def get_my_reservations(user):
-    """Show all reservations for a user in human-readable format."""
-    raw_results_are_tuples = db.session.query(Appointment.appointment_date_time).filter(
+    my_reservations = db.session.query(Appointment.appointment_date_time, Reservation.reservation_id).filter(
         Reservation.user_id == user.user_id).filter(
-        Reservation.appointment_id == Appointment.appointment_id).order_by(Appointment.appointment_date_time).all()
-    list_datetime_objects = [datetime_tuple[0] for datetime_tuple in raw_results_are_tuples]
-    return list_datetime_objects
+        Reservation.appointment_id == Appointment.appointment_id).order_by(
+        Appointment.appointment_date_time).all()
+    list_of_tuples = [(jj[0].strftime(strftime_format), jj[1]) for jj in my_reservations]
+    return list_of_tuples
 
 
 if __name__ == '__main__':

@@ -5,17 +5,32 @@
 {% block body %}
 <h1>Reservations for {{ user.login_name }}</h1>
 
-{% if my_tastings %}
-    <p>We'll see you soon for some exciting melon tasting!</p>
-    <ul>
-        {% for each_date in my_tastings %}
-        <li>{{ each_date }} <button class="myButton" type="submit" id="cancel">Cancel</button>
-        </li>
-        {% endfor %}
-    </ul>
+{% if my_reservations %}
+<p>We'll see you soon for some exciting melon tasting!</p>
+
+{% for reservation_tuple in my_reservations %}
+
+<table>
+    <tr>
+        <td>{{ reservation_tuple[0] }}</td>
+        <td>
+            <form action="/cancel_reservation" method="post">
+                <button class="myButton" type="submit" name="cancel" value="{{ reservation_tuple[1] }}">Cancel {{
+                    reservation_tuple[0] }}
+                </button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+{% endfor %}
+
+<a href="/specify_time_window">Sign up for more tastings!</a>
 
 {% else %}
-    <p>Oh no! You have no reservations! Sign up for some tastings! </p>
+
+<p>Oh no! You have no reservations! <a href="/specify_time_window">Sign up for some tastings!</a></p>
+
 {% endif %}
 
 {% endblock %}
