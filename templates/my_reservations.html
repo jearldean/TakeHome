@@ -14,9 +14,8 @@
     <tr>
         <td>{{ reservation_tuple[0] }}</td>
         <td>
-            <form action="/cancel_reservation" method="post">
-                <button class="myButton" type="submit" name="cancel" value="{{ reservation_tuple[1] }}">Cancel {{
-                    reservation_tuple[0] }}
+            <form action="/cancel_reservation/{{ reservation_tuple[1] }}" method="DELETE">
+                <button class="cancelButton" type="submit">Cancel {{ reservation_tuple[0] }}
                 </button>
             </form>
         </td>

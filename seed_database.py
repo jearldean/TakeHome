@@ -18,6 +18,7 @@ POSSIBLE_PASSWORDS = ['sweet', 'juicy']
 
 
 def seed_database():
+    """This deletes data!"""
     os.system(f"dropdb {DB_NAME}")  # This is just like:  $ dropdb reservations
     os.system(f"createdb {DB_NAME}")
 
@@ -49,7 +50,7 @@ def seed_users_and_reservations():
     for n in range(SEED_USERS):
         login_name = 'Melon Taster ' + str(n + 1)
         password = choice(POSSIBLE_PASSWORDS)
-        new_user = crud.create_user(login_name, password)
+        new_user = crud.check_then_create_user(login_name, password)
         model.db.session.add(new_user)
 
         all_appointments = crud.get_appointments()

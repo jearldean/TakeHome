@@ -5,7 +5,7 @@
 
 <h1>Let's meet! When are you free?</h1>
 
-<form action="/select_appointment" method="post">
+<form action="/select_appointment" method="get">
 
     <label for="start">Start date:</label>
     <input type="date" id="start" name="pick-date"
@@ -26,7 +26,10 @@
 
     <input type="submit">
     <br><br>
-    <small>We are open for half-hour appointments 24/7/365 for your convenience.</small>
+    <small>We are open for half-hour appointments 24/7/365 for your convenience.<br>
+        Reserve any time between now and {{ max_human_date }}.<br>
+        (One Reservation per person per day; We want as many people as possible to sample our delicious melons!)
+    </small>
 
 </form>
 

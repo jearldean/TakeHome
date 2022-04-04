@@ -33,6 +33,11 @@ table {
     text-align: left;
 }
 
+.cancelButton {
+    font-size: 15px;
+    color:red;
+}
+
 .myButton {
     color: rgb(255, 255, 255);
     font-size: 22px;

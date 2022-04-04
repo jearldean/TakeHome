@@ -27,7 +27,7 @@ class Appointment(db.Model):
     __tablename__ = 'appointments'
 
     appointment_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    appointment_date_time = db.Column(db.DateTime, nullable=True)
+    appointment_date_time = db.Column(db.DateTime, nullable=False)
 
     # reservations = a list of Reservation objects
 
@@ -52,6 +52,7 @@ class Reservation(db.Model):
 
 
 def connect_to_db(flask_app, db_uri="postgresql:///reservations", echo=True):
+    """Connect to reservations DB."""
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

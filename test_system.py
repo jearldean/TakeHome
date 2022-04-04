@@ -28,8 +28,8 @@ class TestReservationsDB(unittest.TestCase):
         seed_database.seed_appointments()
         seed_database.seed_users_and_reservations()
 
-    def test_reservations(self):
-        """Perform the tests."""
+    def test_appointments(self):
+        """Tests for appointment crud"""
 
         # Create all the appointments promised:
         minutes_of_window = seed_database.SEED_APPOINTMENTS * 60 * 24
@@ -37,9 +37,13 @@ class TestReservationsDB(unittest.TestCase):
         self.assertEqual(number_of_windows + 1, len(crud.get_appointments()))
 
         # No duplicate appointment slots:
-        appointment_date_times = [appointment.appointment_date_time for appointment in crud.get_appointments()]
+        appointment_date_times = [
+            appointment.appointment_date_time for appointment in crud.get_appointments()]
         self.assertFalse(self.are_there_dupes(a_list=appointment_date_times))
 
+    def test_users(self):
+        """Tests for user crud"""
+        
         for i in range(seed_database.SEED_USERS):
             user_number = i + 1
             user = crud.get_user_by_login_name(login_name=f'Melon Taster {user_number}')
@@ -51,25 +55,32 @@ class TestReservationsDB(unittest.TestCase):
             self.assertEqual('$2b$', user.hashed_password[:4])
 
             # Password should match the only password choice:
-            self.assertTrue(crud.does_password_match(user=user, password_from_form='secret'))
+            self.assertTrue(crud.does_password_match(
+                user=user, password_from_form='secret'))
 
             # Password should not match any other word:
-            self.assertFalse(crud.does_password_match(user=user, password_from_form='not a secret'))
+            self.assertFalse(crud.does_password_match(
+                user=user, password_from_form='not a secret'))
 
             # login_names are unique; Should not be allowed to create a duplicate login_name:
-            self.assertFalse(crud.check_then_create_user(login_name=f'Melon Taster {user_number}', password="xxx"))
+            self.assertFalse(crud.check_then_create_user(
+                login_name=f'Melon Taster {user_number}', password="xxx"))
 
             # Can't have more than 1 reservation per user per calendar day:
-            my_reservation_dates = crud.show_my_reservations(user=user, strftime_format='%Y-%m-%d')
+            my_reservation_dates = crud.get_my_reservations(user=user, human_readable=False)
             if my_reservation_dates:
                 self.assertFalse(self.are_there_dupes(a_list=my_reservation_dates))
 
         # A new, unique login_name CAN be created:
-        self.assertTrue(crud.check_then_create_user(login_name='Melon Taster 3.14159', password="pi"))
+        self.assertTrue(crud.check_then_create_user(
+            login_name='Melon Taster 3.14159', password="pi"))
 
         # No duplicate login_names:
         login_names = [user.login_name for user in crud.get_users()]
         self.assertFalse(self.are_there_dupes(a_list=login_names))
+
+    def test_reservations(self):
+        """Tests for reservation crud"""
 
         # No 2 reservations can EVER occupy the same time window:
         reservation_appointment_ids = [res.appointment_id for res in crud.get_reservations()]
@@ -78,6 +89,7 @@ class TestReservationsDB(unittest.TestCase):
     @staticmethod
     def are_there_dupes(a_list):
         """There are many columns where we can not allow collisions in data."""
+
         if len(a_list) == len(set(a_list)):
             return False
         else:
