@@ -15,7 +15,7 @@ app.jinja_env.undefined = StrictUndefined
 user_logged_in = None
 
 
-@app.route("/")
+@app.route("/takehome")
 def homepage():
     """Display homepage."""
 
