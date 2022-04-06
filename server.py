@@ -1,6 +1,7 @@
 #!/usr/bin/python3.9
 """Server for Melon Tasting Reservations"""
 
+import os
 from flask import Flask, render_template, request, flash, session, redirect
 from model import Reservation, connect_to_db, db
 import crud
@@ -8,7 +9,7 @@ import crud
 from jinja2 import StrictUndefined
 
 app = Flask(__name__)
-app.secret_key = "itsasecret"
+app.secret_key = os.environ['APP_SECRET_KEY']
 app.jinja_env.undefined = StrictUndefined
 
 user_logged_in = None
@@ -128,4 +129,4 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = False
 
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=False)
